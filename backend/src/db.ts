@@ -1,6 +1,7 @@
 const mongoose = require ("mongoose");
+import { MONGODB_URL } from "./config";
 
-mongoose.connect("mongodb+srv://sriman:SRIman%4057@paytm.6fyivlv.mongodb.net/"); 
+mongoose.connect(MONGODB_URL); 
 
 const userSchema = mongoose.Schema({
     username: {
@@ -32,8 +33,5 @@ const userSchema = mongoose.Schema({
 
 
 
-const User = mongoose.Model('User',userSchema);
+ export const User = mongoose.Model('User',userSchema);
 
-module.exports = {
-    User
-}
