@@ -11,6 +11,7 @@ router.get("/balance",authMiddleware, async(req,res)=>{
         userId: req.userId
     });
     res.json({
+        //@ts-ignore
         balance:account.balance
     })
 })
@@ -45,11 +46,9 @@ router.post("/transfer",authMiddleware,async(req,res)=>{
         });
 
     }
-
-    await Account.updateOne({
-        //@ts-ignore
-        userId: req.userId
-    },{$inc:{balance:amount}}).session(session);
+//@ts-ignore
+     await Account.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
+    await Account.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
 
     await session.commitTransaction();
     res.json({
