@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { User } from "../db"
+import { Account, User } from "../db"
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
@@ -26,9 +26,10 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
         });
     }
 
-    const { username, password, firstName, lastName } = result.data;
 
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ 
+        username:req.body.username
+     });
 
     if (existingUser) {
         return res.status(411).json({
@@ -37,13 +38,22 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     }
 
     const user = await User.create({
-        username,
-        password,
-        firstName,
-        lastName,
+        username:req.body.username,
+        password:req.body.password,
+        firstName:req.body.firstName,
+        lastName:req.body.lastName,
     });
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+    const userId= user._id;
+
+    await Account.create({
+        userId,
+        balance: 1+Math.random()*10000
+    })
+
+    const token = jwt.sign({ 
+        userId: user._id 
+    }, JWT_SECRET);
     user.token = token;
 
 
@@ -113,5 +123,31 @@ userRouter.put("/",authMiddleware,async(req,res)=>{
 
 
 });
+
+userRouter.get("/bulk",async(req,res)=>{
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or:[{
+            fistName:{
+                "$regex":filter
+            }
+        },{
+            lastName:{
+                "$regex":filter
+            }
+        }]
+    })
+
+   res.json({
+    //@ts-ignore
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
 
 export default userRouter;
