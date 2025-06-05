@@ -16,15 +16,15 @@ export const Users = () => {
     },[filter]); 
 
     return <>
-        <div className="font-bold mt-6 text-lg">
+        <div className="font-bold mt-6 text-lg mx-auto max-w-4xl">
             Users
         </div>
-        <div className="my-2">
+        <div className="my-2 mx-auto max-w-4xl">
             <input onChange={(e)=>{
                 setFilter(e.target.value);
             }} type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>
         </div>
-        <div>
+        <div className="mx-auto max-w-4xl">
             {users.map(user => <User user={user} />)}
         </div>
     </>
@@ -32,11 +32,12 @@ export const Users = () => {
 
 function User({user}) {
     const navigate = useNavigate();
+    const logoLetter = user.firstName[0].toUpperCase();
     return <div className="flex justify-between">
         <div className="flex">
-            <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
-                <div className="flex flex-col justify-center h-full text-xl">
-                    {user.firstName[0]}
+            <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center items-center mt-1 mr-2">
+                <div className="flex justify-center  text-xl items-center ">
+                    {logoLetter}
                 </div>
             </div>
             <div className="flex flex-col justify-center h-ful">

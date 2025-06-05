@@ -6,7 +6,7 @@ import { User, Account } from "../db";
 import { JWT_SECRET } from "../config";
 import { authMiddleware } from "../middleware";
 
-const router = express.Router();6
+const router = express.Router(); 6
 
 
 const signupSchema = z.object({
@@ -70,8 +70,8 @@ router.put("/", authMiddleware, async (req: Request, res: Response) => {
   if (!result.success)
     return res.status(400).json({ errors: result.error.format() });
 
-  const update = { 
-    ...result.data, 
+  const update = {
+    ...result.data,
     password: await bcrypt.hash(result.data.password, 10)
   };
   //@ts-ignore
@@ -87,7 +87,7 @@ router.get("/bulk", async (req, res) => {
   const users = await User.find({
     $or: [
       { firstName: { $regex: filter, $options: "i" } },
-      { lastName:  { $regex: filter, $options: "i" } },
+      { lastName: { $regex: filter, $options: "i" } },
     ]
   }).limit(100);
   return res.json({
@@ -97,5 +97,9 @@ router.get("/bulk", async (req, res) => {
     }))
   });
 });
+
+// Fix the /me endpoint
+//@ts-ignore
+
 
 export default router;

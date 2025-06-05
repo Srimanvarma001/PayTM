@@ -9,39 +9,62 @@ import axios from "axios";
 
 export const Signup = () => {
 
-    const [firstName,setFirstName] = useState("");
-    const [lastName,setLastName] = useState("");
-    const [username,setUserName] = useState("");
-    const [password,setPassword] = useState("");
-    const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    return <div className="bg-slate-300 h-screen flex justify-center">
+  return <div className="bg-slate-300 h-screen flex justify-center">
     <div className="flex flex-col justify-center">
       <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
         <Heading label={"Sign up"} />
         <SubHeading label={"Enter your infromation to create an account"} />
-        <InputBox onChange={(e)=>{
-            setFirstName(e.target.value);
+        <InputBox onChange={(e) => {
+          setFirstName(e.target.value);
         }} placeholder="John" label={"First Name"} />
-        <InputBox onChange={(e)=>{
-            setLastName(e.target.value);
+        <InputBox onChange={(e) => {
+          setLastName(e.target.value);
         }} placeholder="Doe" label={"Last Name"} />
-        <InputBox onChange={(e)=>{
-            setUserName(e.target.value);
+        <InputBox onChange={(e) => {
+          setUserName(e.target.value);
         }} placeholder="sriman@gmail.com" label={"Email"} />
-        <InputBox onChange={(e)=>{
-            setPassword(e.target.value);
+        <InputBox onChange={(e) => {
+          setPassword(e.target.value);
         }} placeholder="123456" label={"Password"} />
         <div className="pt-4">
-          <Button onClick={async()=>{
-             const response = await axios.post("http://localhost:3000/api/v1/user/signup",{
-                username,
+          <Button onClick={async () => {
+            try {
+              // Basic validation
+              if (!username || !firstName || !lastName || !password) {
+                alert("Please fill in all fields");
+                return;
+              }
+
+              if (password.length < 6) {
+                alert("Password must be at least 6 characters long");
+                return;
+              }
+
+              const response = await axios.post("http://localhost:3000/api/v1/user/signup", {
+                username, // Add email since backend might expect it
                 firstName,
                 lastName,
                 password
-            });
-            localStorage.setItem("token",response.data.token);
-            navigate("/dashboard") 
+              });
+
+              if (response.data.token) {
+                localStorage.setItem("token", response.data.token);
+                navigate("/dashboard");
+              } else {
+                alert("Signup failed - no token received");
+              }
+            } catch (error) {
+              // Show error message to user
+              const errorMessage = error.response?.data?.message || "Signup failed";
+              alert(errorMessage);
+              console.error("Signup error:", error);
+            }
           }} label={"Sign up"} />
         </div>
         <BottomWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />

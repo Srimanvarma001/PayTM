@@ -1,5 +1,5 @@
 export const Balance = ({ value }) => {
-    return <div className="flex">
+    return <div className="flex max-w-4xl mx-auto">
         <div className="font-bold text-lg">
             Your balance
         </div>
