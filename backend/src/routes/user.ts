@@ -100,7 +100,6 @@ router.get("/me", authMiddleware, async (req: Request, res: Response) => {
       id: user._id
     });
   } catch (error) {
-    console.error("Error in /me endpoint:", error);
     res.status(500).json({
       message: "Error fetching user details"
     });
@@ -126,7 +125,6 @@ router.get("/bulk", authMiddleware, async (req: Request, res: Response) => {
       }))
     });
   } catch (error) {
-    console.error("Error fetching users:", error);
     res.status(500).json({
       message: "Error fetching users",
       users: []

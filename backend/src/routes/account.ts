@@ -40,7 +40,6 @@ router.get("/balance", authMiddleware, async (req: Request, res: Response) => {
             balance: account.balance
         });
     } catch (error) {
-        console.error("Error fetching balance:", error);
         res.status(500).json({
             message: "Error fetching balance"
         });
@@ -70,7 +69,6 @@ router.get("/transactions", authMiddleware, async (req: Request, res: Response) 
             transactions: formattedTransactions
         });
     } catch (error) {
-        console.error("Error in /transactions endpoint:", error);
         res.status(500).json({
             message: "Error fetching transactions",
             transactions: []
@@ -161,7 +159,6 @@ router.post("/transfer", authMiddleware, async (req: Request, res: Response) => 
 
     } catch (error) {
         await session.abortTransaction();
-        console.error("Transfer error:", error);
         res.status(500).json({
             message: "Transfer failed",
             success: false

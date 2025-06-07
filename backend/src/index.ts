@@ -9,16 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Debug middleware to log all requests
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    next();
-});
-
 app.use("/api/v1", mainRouter);
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => { });
 

@@ -21,7 +21,7 @@ export const Users = () => {
                     setUsers(filteredUsers);
                 }
             } catch (error) {
-                console.error("Error fetching users:", error);
+                // Remove console.error
             }
         };
 

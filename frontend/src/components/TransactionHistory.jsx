@@ -21,7 +21,6 @@ export const TransactionHistory = () => {
                 }
             });
 
-            console.log("Transaction response:", response.data); // Debug log
 
             if (response.data && Array.isArray(response.data.transactions)) {
                 setTransactions(response.data.transactions);
@@ -29,7 +28,6 @@ export const TransactionHistory = () => {
                 throw new Error("Invalid transaction data received");
             }
         } catch (error) {
-            console.error("Error fetching transactions:", error);
             setError("Failed to load transactions");
         } finally {
             setLoading(false);
