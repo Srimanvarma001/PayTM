@@ -1,17 +1,24 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-import mainRouter from "./routes/index";
 import cors from "cors";
-
-
+import mainRouter from "./routes/index";
 
 const app = express();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+});
 
 app.use("/api/v1", mainRouter);
 
-app.listen(3000);
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 

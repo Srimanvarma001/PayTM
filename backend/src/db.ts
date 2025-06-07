@@ -1,4 +1,4 @@
-import "dotenv/config"; 
+import "dotenv/config";
 import mongoose from "mongoose";
 import { MONGODB_URL } from "./config";
 
@@ -49,5 +49,38 @@ const accountSchema = new mongoose.Schema({
     required: true
   }
 });
+
+
+const transactionSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  with: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  amount: {
+    type: Number,
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['credit', 'debit'],
+    required: true
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Add indexes for better query performance
+transactionSchema.index({ userId: 1, timestamp: -1 });
+
+export const Transaction = mongoose.model('Transaction', transactionSchema);
+
 
 export const Account = mongoose.model("Account", accountSchema);

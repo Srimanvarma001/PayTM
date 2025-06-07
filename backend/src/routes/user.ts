@@ -82,24 +82,57 @@ router.put("/", authMiddleware, async (req: Request, res: Response) => {
 
 //@ts-ignore
 
-router.get("/bulk", async (req, res) => {
-  const filter = String(req.query.filter || "");
-  const users = await User.find({
-    $or: [
-      { firstName: { $regex: filter, $options: "i" } },
-      { lastName: { $regex: filter, $options: "i" } },
-    ]
-  }).limit(100);
-  return res.json({
-    users: users.map(u => ({
-      _id: u._id, username: u.username,
-      firstName: u.firstName, lastName: u.lastName
-    }))
-  });
+router.get("/me", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    // Send back user details
+    res.json({
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      id: user._id
+    });
+  } catch (error) {
+    console.error("Error in /me endpoint:", error);
+    res.status(500).json({
+      message: "Error fetching user details"
+    });
+  }
 });
 
-// Fix the /me endpoint
 //@ts-ignore
+router.get("/bulk", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const filter = req.query.filter as string || "";
+    const users = await User.find({
+      $or: [
+        { firstName: { $regex: filter, $options: "i" } },
+        { lastName: { $regex: filter, $options: "i" } },
+      ]
+    }).select('firstName lastName _id'); // Only select needed fields
+
+    res.json({
+      users: users.map(u => ({
+        _id: u._id,
+        firstName: u.firstName,
+        lastName: u.lastName
+      }))
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      message: "Error fetching users",
+      users: []
+    });
+  }
+});
 
 
 export default router;
